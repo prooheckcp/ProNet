@@ -1,0 +1,30 @@
+<roblox version="4">
+  <Item class="ServerScriptService" referent="0">
+    <Properties>
+      <string name="Name">ServerScriptService</string>
+    </Properties>
+    <Item class="Folder" referent="1">
+      <Properties>
+        <string name="Name">ProNet</string>
+      </Properties>
+      <Item class="ModuleScript" referent="2">
+        <Properties>
+          <string name="Name">main</string>
+          <string name="Source"></string>
+        </Properties>
+      </Item>
+    </Item>
+    <Item class="LocalScript" referent="3">
+      <Properties>
+        <string name="Name">client</string>
+        <string name="Source">print("Hello world, from client!")</string>
+      </Properties>
+    </Item>
+    <Item class="Script" referent="4">
+      <Properties>
+        <string name="Name">server</string>
+        <string name="Source">print("Hello world, from server!")</string>
+      </Properties>
+    </Item>
+  </Item>
+</roblox>
