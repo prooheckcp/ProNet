@@ -5,7 +5,13 @@ local Players = game:GetService("Players")
 --Dependencies
 local ProNet = require(ReplicatedStorage.ProNet)
 local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", {
-    signalType = ProNet.SignalType.Event
+    signalType = ProNet.SignalType.Event,
+    protected = false
+})
+
+local protectedSignal : ProNet.Signal = ProNet.newSignal("ProtectedSignal", {
+    signalType = ProNet.SignalType.Event,
+    protected = true
 })
 
 local function playerJoined(player : Player)
