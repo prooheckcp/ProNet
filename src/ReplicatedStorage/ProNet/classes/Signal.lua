@@ -2,6 +2,9 @@
     Holds the signals class
 ]]
 
+--Services
+local RunService = game:GetService("RunService")
+
 --Root folders
 local mainFolder = script.Parent
 local enums = mainFolder.enums
@@ -36,18 +39,22 @@ function Signal.new()
 end
 
 --[=[
-    Fires a single client
+    Fires a single client with custom data
 ]=]
 function Signal:fire(player : Player, ...) : any
-    self.remote:FireClient(player, ...)
+    if self.signalType == SignalType.Event then
+        self.remote:FireClient(player, ...)
+    elseif self.signalType == SignalType.Function then
+        return self.remote:InvokeClient(player, ...)
+    end 
 end
 
 function Signal:fireAll(...)
     if self.signalType == SignalType.Function then
         return error(FIRE_ALL_FUNCTION)
+    elseif self.signalType == SignalType.Event then
+        self.remote:FireAllClients(...)
     end
-
-    self.remote:FireAllClients(...)
 end
 
 return Signal

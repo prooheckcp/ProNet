@@ -6,9 +6,10 @@ local Players = game:GetService("Players")
 --Root folders
 local mainFolder = script.Parent
 local enums = mainFolder.enums
+local classes = mainFolder.classes
 
 --Dependencies
-local Signal = require(mainFolder.Signal)
+local Signal = require(classes.Signal)
 local SignalType = require(enums.SignalType)
 
 --Constants
