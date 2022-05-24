@@ -5,6 +5,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ProNet = require(ReplicatedStorage.ProNet)
 local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
 
-testSignal.Event.Connect(function(...)
+testSignal.Event:Connect(function(...)
     print(...)
 end)

@@ -16,6 +16,7 @@ local protectedSignal : ProNet.Signal = ProNet.newSignal("ProtectedSignal", {
 
 local function playerJoined(player : Player)
     task.wait(3)
+    print("Sent request!")
     testSignal:fire(player, "Some data", 3, true)
 end
 

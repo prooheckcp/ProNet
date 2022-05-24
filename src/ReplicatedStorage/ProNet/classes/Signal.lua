@@ -15,8 +15,9 @@ local SignalType = require(enums.SignalType)
 export type Callback = {(callback : any) -> any}
 
 export type Event = {
+    Connect : Callback,
     Super : any,
-    Connect : Callback
+    attachedCallbacks : Array<Callback> | Callback
 }
 
 export type Signal = {
@@ -25,8 +26,7 @@ export type Signal = {
     _load : ()->nil,
     protected : boolean,
     Event : Event,
-    eventListener : RBXScriptSignal,
-    attachedCallbacks : Array<Callback> | Callback
+    eventListener : RBXScriptSignal
 }
 
 --Constants
@@ -41,7 +41,6 @@ Signal.protected = false
 Signal.signalType = SignalType.Event
 Signal.Event = {}
 Signal.eventListener = nil
-Signal.attachedCallbacks = nil
 
 --[=[
     Creates a new signal connection between the client and the
@@ -50,9 +49,7 @@ Signal.attachedCallbacks = nil
 function Signal.new()
     local self = setmetatable({}, {__index = Signal})
     self.new = nil -- Do not expose the new method
-
-    self.Event.Super =self
-
+    self.Event.Super = self
     return self
 end
 
@@ -66,36 +63,36 @@ function Signal:_load() : nil
 
     --Set callback format
     if self.signalType == SignalType.Event then
-        self.attachedCallbacks = {}
+        self.Event.attachedCallbacks = {}
     elseif self.signalType == SignalType.Function then
-        self.attachedCallbacks = nil
+        self.Event.attachedCallbacks = nil
     end
 
     if RunService:IsServer() then
         if self.signalType == SignalType.Event then
             self.remote.OnServerEvent:Connect(function(...)
-                for _, callback : Callback in pairs(self.attachedCallbacks) do
+                for _, callback : Callback in pairs(self.Event.attachedCallbacks) do
                     callback(...)
                 end
             end)
         elseif self.signalType == SignalType.Function then
             self.remote.OnServerInvoke = function(...)
-                if self.attachedCallbacks then
-                    return self.attachedCallbacks(...)
+                if self.Event.attachedCallbacks then
+                    return self.Event.attachedCallbacks(...)
                 end
             end
         end
     elseif RunService:IsClient() then
         if self.signalType == SignalType.Event then
             self.remote.OnClientEvent:Connect(function(...)
-                for _, callback : Callback in pairs(self.attachedCallbacks) do
+                for _, callback : Callback in pairs(self.Event.attachedCallbacks) do
                     callback(...)
                 end
             end)
         elseif self.signalType == SignalType.Function then
             self.remote.OnClientInvoke:Connect(function(...)
-                if self.attachedCallbacks then
-                    return self.attachedCallbacks(...)
+                if self.Event.attachedCallbacks then
+                    return self.Event.attachedCallbacks(...)
                 end
             end)
         end
@@ -130,14 +127,13 @@ function Signal.Event:Connect(callback : (any) -> any)
     if typeof(callback) ~= "function" then
         return
     end
-
     if self.Super.signalType == SignalType.Function then
-        if self.Super.AttachedCallbacks ~= nil then
+        if self.attachedCallbacks ~= nil then
             warn(WARNING_OVERRIDING_CALLBACK)
         end
-        self.Super.AttachedCallbacks = callback
+        self.attachedCallbacks = callback
     elseif self.Super.signalType == SignalType.Event then
-        table.insert(self.Super.AttachedCallbacks, callback)
+        table.insert(self.attachedCallbacks, callback)
     end
 end
 
