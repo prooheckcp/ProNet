@@ -1,6 +1,7 @@
 --Services
 local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
 
 --Root folders
 local mainFolder = script.Parent
@@ -12,26 +13,48 @@ local Signal = require(classes.Signal)
 --Constants
 local SIGNAL_DOES_NOT_EXIST : string = "Requested signal: {name} does not exist!"
 local ENTRY_POINT_NAME : string = "EntryPointRemoteData"
+local SUSPICIOUS_ACTIVITY : string = "Suspicious activity. Exploiting is not tolerated. If you believe this is a mistake then contact a developer."
+local REQUEST_LIMITS : number = 30
+local REQUEST_TIMEOUT : number = 10 --seconds
 
 --Variables
+local localPlayer : Player = Players.LocalPlayer
 local remotesDirectory : Folder = nil
 local remotesIDs : Dictionary<string | string> = {} --Remote name | Remote ID
 
 local privateKey : string = ""
 local signalsDirectories : Dictionary<string | string> = {}
 
+local requestAttempts : number = 0
 local remotesCount : number = 0
 
 local ProNet = {}
+
+
+
+local function addRequest()
+    if requestAttempts >= REQUEST_LIMITS then
+        return localPlayer:Kick(SUSPICIOUS_ACTIVITY)
+    end
+    requestAttempts += 1
+    task.delay(REQUEST_TIMEOUT, function()
+        requestAttempts -= 1
+    end)
+end
 
 local function newSignalWrapper(signalData : table)
     local newSignal : Signal.Signal = Signal.new()
     newSignal.signalType = signalData.signalType
     newSignal.remote = signalData.remote
+    newSignal:_load()
     return newSignal
 end
 
 local function updateCurrentSignals() : nil
+    if remotesDirectory and #remotesDirectory:GetChildren() <= remotesCount then
+        return --Invalid update request
+    end
+
     local entryRemote : RemoteFunction = ReplicatedStorage[ENTRY_POINT_NAME]
     remotesDirectory, remotesIDs = entryRemote:InvokeServer(privateKey)
 
@@ -57,8 +80,9 @@ function ProNet.getSignal(name : string)
         end
 
         --Check if it was created on run-time
-
-        return
+        updateCurrentSignals()
+        addRequest()
+        return ProNet.getSignal(name)
     end
 
     return signalsDirectories[name]

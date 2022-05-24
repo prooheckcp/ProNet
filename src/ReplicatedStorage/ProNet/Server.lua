@@ -69,8 +69,13 @@ function ProNet.newSignal(name : string, options : table) : Signal.Signal
     newSignal.remote.Name = HttpService:GenerateGUID(false)
     newSignal.remote.Parent = remotesDirectory
 
+    newSignal:_load()
+
     return newSignal
 end
+
+--Events
+Players.PlayerRemoving:Connect(playerLeft)
 
 --Export types
 export type Signal = Signal.Signal
