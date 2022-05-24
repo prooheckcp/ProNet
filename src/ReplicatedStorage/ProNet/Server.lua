@@ -15,11 +15,15 @@ local SignalType = require(enums.SignalType)
 --Constants
 local ALREADY_EXISTS : string = "A signal by the name of: {name} already exists, please avoid reusing signals across server files!"
 local ENTRY_POINT_NAME : string = "EntryPointRemoteData"
+local LOADING_POINT_NAME : string = "LoadingPointRemote"
 
 --Variables
 local privateKeys : Dictionary<Player | string> = {}
+local loadedUsers : Dictionary<Player | boolean> = {}
 local entryRemote : RemoteFunction = nil
+local loadedRemote : RemoteEvent = nil
 local remotesDirectory : Folder = nil
+
 local storedSignals : Dictionary<string | Signal.Signal> = {}
 local ProNet = {
     SignalType = SignalType
@@ -27,6 +31,7 @@ local ProNet = {
 
 local function playerLeft(player : Player)
     privateKeys[player] = nil
+    loadedUsers[player] = nil
 end
 
 function ProNet:init() : nil
@@ -39,10 +44,20 @@ function ProNet:init() : nil
     entryRemote.Name = ENTRY_POINT_NAME
     entryRemote.Parent = ReplicatedStorage
 
+    loadedRemote = Instance.new("RemoteEvent")
+    loadedRemote.Name = LOADING_POINT_NAME
+    loadedRemote.Parent = ReplicatedStorage
+
+    loadedRemote.OnServerEvent:Connect(function(player : Player)
+        loadedUsers[player] = true
+    end)
+
     entryRemote.OnServerInvoke = function(player : Player, privateKey : string)
         privateKeys[player] = privateKey
         return remotesDirectory, storedSignals
     end
+
+    Signal.loadedUsers = loadedUsers --pass by reference
 end
 
 function ProNet.newSignal(name : string, options : table) : Signal.Signal

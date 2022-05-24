@@ -11,9 +11,11 @@ local classes = mainFolder.classes
 local Signal = require(classes.Signal)
 
 --Constants
-local SIGNAL_DOES_NOT_EXIST : string = "Requested signal: {name} does not exist!"
 local ENTRY_POINT_NAME : string = "EntryPointRemoteData"
+local LOADING_POINT_NAME : string = "LoadingPointRemote"
+local SIGNAL_DOES_NOT_EXIST : string = "Requested signal: {name} does not exist!"
 local SUSPICIOUS_ACTIVITY : string = "Suspicious activity. Exploiting is not tolerated. If you believe this is a mistake then contact a developer."
+
 local REQUEST_LIMITS : number = 30
 local REQUEST_TIMEOUT : number = 10 --seconds
 
@@ -25,12 +27,11 @@ local remotesIDs : Dictionary<string | string> = {} --Remote name | Remote ID
 local privateKey : string = ""
 local signalsDirectories : Dictionary<string | string> = {}
 
+local userLoaded : boolean = false
 local requestAttempts : number = 0
 local remotesCount : number = 0
 
 local ProNet = {}
-
-
 
 local function addRequest()
     if requestAttempts >= REQUEST_LIMITS then
@@ -71,6 +72,11 @@ end
 function ProNet:init()
     privateKey = HttpService:GenerateGUID(false)
     updateCurrentSignals()
+
+    if not userLoaded then
+        userLoaded = true
+        ReplicatedStorage:WaitForChild(LOADING_POINT_NAME):FireServer()
+    end
 end
 
 function ProNet.getSignal(name : string)

@@ -8,3 +8,4 @@ local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
 testSignal.Event:Connect(function(...)
     print(...)
 end)
+

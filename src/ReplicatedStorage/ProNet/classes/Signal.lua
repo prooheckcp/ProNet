@@ -3,6 +3,7 @@
 ]]
 
 --Services
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 --Root folders
@@ -33,9 +34,11 @@ export type Signal = {
 local FIRE_ALL_FUNCTION : string = "Fire All cannot be called on RemoteFunctions, only on RemoteEvents!"
 local REMOTE_NOT_FOUND : string = "Internal Error! Could not find remote instance!"
 local WARNING_OVERRIDING_CALLBACK : string = "Warning! You're overriding the callback of a remote function!"
+local YIELDING_LIMIT : number = 10 -- seconds
 
 --Variables
 local Signal : Signal = {}
+Signal.loadedUsers = nil
 Signal.remote = nil
 Signal.protected = false
 Signal.signalType = SignalType.Event
@@ -104,6 +107,19 @@ end
     Fires a single client with custom data
 ]=]
 function Signal:fire(player : Player, ...) : any
+    if not self.loadedUsers[player] then
+        if player.Parent == Players then
+            local yieldingCounter = 0
+            repeat
+                yieldingCounter += task.wait()
+                if yieldingCounter > YIELDING_LIMIT then
+                    break
+                end
+            until
+                self.loadedUsers[player]
+        end        
+    end
+
     if self.signalType == SignalType.Event then
         self.remote:FireClient(player, ...)
     elseif self.signalType == SignalType.Function then
