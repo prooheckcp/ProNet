@@ -48,12 +48,16 @@ Signal.signalType = SignalType.Event
 Signal.Event = nil
 Signal.eventListener = nil
 
-local function encrytUnpackedData(...)
-    local jsonEncoded : string = HttpService:JSONEncode(...)
+local function encrytUnpackedData(...) : string
+    local jsonEncoded : string = HttpService:JSONEncode(#{...} > 1 and {...} or ...)
     return HashLib.base64_encode(jsonEncoded)
 end
 
-local function decryptData(hashedData : string)
+local function decryptData(hashedData : string) : nil | string
+    if typeof(hashedData) ~= "string" then
+        return nil
+    end
+    
     local unhashedData = HashLib.base64_decode(hashedData)
     return table.unpack(HttpService:JSONDecode(unhashedData))
 end
@@ -62,7 +66,7 @@ end
     Creates a new signal connection between the client and the
     server
 ]=]
-function Signal.new()
+function Signal.new() : Signal
     local self = setmetatable({
         Event = {}
     }, {__index = Signal})
@@ -159,9 +163,9 @@ end
 ]=]
 function Signal:_fireServer(...)
     if self.signalType == SignalType.Event then
-        self.remote:FireServer(self.protected and encrytUnpackedData(...) or ...)
+        self.remote:FireServer((self.protected and #{...} > 0) and encrytUnpackedData(...) or ...)
     elseif self.signalType == SignalType.Function then
-        return self.remote:InvokeServer(self.protected and encrytUnpackedData(...) or ...)
+        return self.remote:InvokeServer((self.protected and #{...} > 0) and encrytUnpackedData(...) or ...)
     end
 end
 
@@ -182,12 +186,22 @@ function Signal:_fireClient(player : Player, ...)
         end        
     end
 
-
+    local dataToSend : any = (self.protected and #{...} > 0) and encrytUnpackedData(...) or {...}
+    local isTable : boolean = typeof(dataToSend) == "table"
 
     if self.signalType == SignalType.Event then
-        self.remote:FireClient(player, self.protected and encrytUnpackedData(...) or ...)
+        if isTable then
+            self.remote:FireClient(player, table.unpack(dataToSend))
+        else
+            
+            self.remote:FireClient(player, dataToSend)
+        end      
     elseif self.signalType == SignalType.Function then
-        return self.remote:InvokeClient(player, self.protected and encrytUnpackedData(...) or ...)
+        if isTable then
+            return self.remote:InvokeClient(player, table.unpack(dataToSend))
+        else
+            return self.remote:InvokeClient(player, dataToSend)
+        end
     end
 end
 

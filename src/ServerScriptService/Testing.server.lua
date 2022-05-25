@@ -21,14 +21,15 @@ local functionalSignal : ProNet.Signal = ProNet.newSignal("FunctionSignal", {
     protected = false
 })
 
-testSignal.Event:Connect(function(player : Player, word1, word2)
-    print("Test signal from the server")
+testSignal.Event:Connect(function(player : Player, ...)
+    print("Test signal from the server", ...)
 end)
 
-protectedSignal.Event:Connect(function(player : Player, word1, word2)
-    print("Protected signal server!")        
+protectedSignal.Event:Connect(function(player : Player, ...)
+    print("Protected signal server!", ...)        
 end)
 
 Players.PlayerAdded:Connect(function(player : Player)
-    testSignal:fire(player, "Hello world!")
+    testSignal:fire(player)
+    protectedSignal:fire(player)
 end)

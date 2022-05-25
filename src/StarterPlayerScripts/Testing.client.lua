@@ -10,7 +10,10 @@ local functionalSignal : ProNet.Signal = ProNet.getSignal("FunctionSignal")
 testSignal:fire()
 protectedSignal:fire()
 
-testSignal.Event:Connect(function(message)
-    print("Test signal from the client!")
-    print(message)
+testSignal.Event:Connect(function(...)
+    print("Test signal from the client!", ...)
+end)
+
+protectedSignal.Event:Connect(function(...)
+    print("Protected signal from the client!", ...)
 end)
