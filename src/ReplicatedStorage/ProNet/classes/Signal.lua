@@ -42,7 +42,7 @@ Signal.loadedUsers = nil
 Signal.remote = nil
 Signal.protected = false
 Signal.signalType = SignalType.Event
-Signal.Event = {}
+Signal.Event = nil
 Signal.eventListener = nil
 
 --[=[
@@ -50,9 +50,31 @@ Signal.eventListener = nil
     server
 ]=]
 function Signal.new()
-    local self = setmetatable({}, {__index = Signal})
+    local self = setmetatable({
+        Event = {}
+    }, {__index = Signal})
+
     self.new = nil -- Do not expose the new method
-    self.Event.Super = self
+
+    --[=[
+        Creates a new signal connection between the client and the
+        server
+    ]=]
+    self.Event.Connect = function(_, callback : (any) -> any)
+        if typeof(callback) ~= "function" then
+            return
+        end
+
+        if self.signalType == SignalType.Function then
+            if self.Event.attachedCallbacks ~= nil then
+                warn(WARNING_OVERRIDING_CALLBACK)
+            end
+            self.Event.attachedCallbacks = callback
+        elseif self.signalType == SignalType.Event then
+            table.insert(self.Event.attachedCallbacks, callback)
+        end
+    end
+
     return self
 end
 
@@ -132,24 +154,6 @@ function Signal:fireAll(...)
         return error(FIRE_ALL_FUNCTION)
     elseif self.signalType == SignalType.Event then
         self.remote:FireAllClients(...)
-    end
-end
-
---[=[
-    Creates a new signal connection between the client and the
-    server
-]=]
-function Signal.Event:Connect(callback : (any) -> any)
-    if typeof(callback) ~= "function" then
-        return
-    end
-    if self.Super.signalType == SignalType.Function then
-        if self.attachedCallbacks ~= nil then
-            warn(WARNING_OVERRIDING_CALLBACK)
-        end
-        self.attachedCallbacks = callback
-    elseif self.Super.signalType == SignalType.Event then
-        table.insert(self.attachedCallbacks, callback)
     end
 end
 

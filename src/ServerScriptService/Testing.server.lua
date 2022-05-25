@@ -16,6 +16,7 @@ local protectedSignal : ProNet.Signal = ProNet.newSignal("ProtectedSignal", {
 
 local function playerJoined(player : Player)
     testSignal:fire(player, "Some data", 3, true)
+    protectedSignal:fire(player, "UwU")
 end
 
 Players.PlayerAdded:Connect(playerJoined)
