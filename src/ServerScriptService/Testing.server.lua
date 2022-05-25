@@ -8,7 +8,9 @@ local ProNet = require(ReplicatedStorage.ProNet)
 --Variables
 local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", {
     signalType = ProNet.SignalType.Event,
-    protected = false
+    protected = false,
+    requestLimit = 5, --Limit per second
+    requestResetTime = 3, --Change the limit from per 1 second to 3
 })
 
 local protectedSignal : ProNet.Signal = ProNet.newSignal("ProtectedSignal", {
@@ -22,9 +24,6 @@ local functionalSignal : ProNet.Signal = ProNet.newSignal("FunctionSignal", {
 })
 
 
-Players.PlayerAdded:Connect(function(player : Player)
-    testSignal:fire(player, "first")
-    task.wait(5)
-    print("Called again")
-    testSignal:fire(player, "second")
+testSignal.Event:Connect(function()
+    print("Called!")
 end)

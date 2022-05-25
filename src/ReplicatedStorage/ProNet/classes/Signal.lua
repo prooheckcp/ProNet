@@ -33,12 +33,18 @@ export type Signal = {
 local FIRE_ALL_FUNCTION : string = "Fire All cannot be called on RemoteFunctions, only on RemoteEvents!"
 local REMOTE_NOT_FOUND : string = "Internal Error! Could not find remote instance!"
 local WARNING_OVERRIDING_CALLBACK : string = "Warning! You're overriding the callback of a remote function!"
+local REACHED_REQUEST_LIMIT : string = "Reached request limit! Exploiting is not tolerated. If you believe this is a mistake then please contact a developer!"
 local YIELDING_LIMIT : number = 10 -- seconds
 
 --Variables
 local Signal : Signal = {}
 Signal.loadedUsers = nil
 Signal.privateKeys = nil
+
+Signal.requestCounter = {}
+Signal.requestLimit = -1
+Signal.requestResetTime = 1
+
 Signal.remote = nil
 Signal.protected = false
 Signal.signalType = SignalType.Event
@@ -94,6 +100,10 @@ function Signal.new() : Signal
             table.insert(self.Event.attachedCallbacks, callback)
         end
 
+        Players.PlayerRemoving:Connect(function(player : Player)
+            self.requestCounter[player] = nil
+        end)
+
         return {Disconnect = function(_)
             if self.signalType == SignalType.Event then
                 for index : number, _callback in pairs(self.Event.attachedCallbacks) do
@@ -131,6 +141,27 @@ function Signal:_callbackServer(callback : (any, any)->nil, player : Player, ...
     end
 end
 
+function Signal:_requestLimitCounter(player : Player)
+    if self.requestLimit > 0 then
+        if not self.requestCounter[player] then
+            self.requestCounter[player] = 0
+        end
+
+        self.requestCounter[player]  += 1
+        if self.requestCounter[player] > self.requestLimit then
+            return player:Kick(REACHED_REQUEST_LIMIT)
+        end
+
+        task.delay(self.requestResetTime, function()
+            if not self.requestCounter[player] then
+                return
+            end
+
+            self.requestCounter[player] -= 1
+        end)
+    end
+end
+
 --[=[
     Load the data of the signal
 ]=]
@@ -149,12 +180,14 @@ function Signal:_load() : nil
     if RunService:IsServer() then
         if self.signalType == SignalType.Event then
             self.remote.OnServerEvent:Connect(function(player : Player, ...)
-                for _, callback : Callback in pairs(self.Event.attachedCallbacks) do
+                self:_requestLimitCounter(player)
+                for _, callback : Callback in pairs(self.Event.attachedCallbacks) do     
                     self:_callbackServer(callback, player, ...)
                 end
             end)
         elseif self.signalType == SignalType.Function then
             self.remote.OnServerInvoke = function(player : Player, ...)
+                self:_requestLimitCounter(player)
                 if self.Event.attachedCallbacks then
                     return self:_callbackServer(self.Event.attachedCallbacks, player, ...)
                 end

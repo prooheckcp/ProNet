@@ -7,12 +7,7 @@ local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
 local protectedSignal : ProNet.Signal = ProNet.getSignal("ProtectedSignal")
 local functionalSignal : ProNet.Signal = ProNet.getSignal("FunctionSignal")
 
-testSignal:fire()
-protectedSignal:fire()
-
-local connection : ProNet.Connection = testSignal.Event:Connect(function(...)
-    print(...)
-end)
-
-task.wait(2)
-connection:Disconnect()
+for i = 0, 10 do
+    testSignal:fire()
+    task.wait(0.2)
+end

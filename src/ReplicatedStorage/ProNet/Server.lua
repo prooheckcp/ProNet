@@ -77,6 +77,12 @@ function ProNet.newSignal(name : string, options : table) : Signal.Signal
         if options.protected then
             newSignal.protected = true
         end
+        if options.requestLimit then
+            newSignal.requestLimit = options.requestLimit
+        end
+        if options.requestResetTime then
+            newSignal.requestResetTime = options.requestResetTime
+        end
     end
 
     if newSignal.signalType == SignalType.Event then
