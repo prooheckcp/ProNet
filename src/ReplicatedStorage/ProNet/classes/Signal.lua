@@ -103,7 +103,7 @@ function Signal:_callbackServer(callback : (any, any)->nil, player : Player, ...
     if self.protected then
         return callback(player, decryptData(({...})[1]))
     else
-        return callback(player, ...)
+        return callback(player, table.unpack(...))
     end
 end
 
@@ -181,6 +181,8 @@ function Signal:_fireClient(player : Player, ...)
                 self.loadedUsers[player]
         end        
     end
+
+
 
     if self.signalType == SignalType.Event then
         self.remote:FireClient(player, self.protected and encrytUnpackedData(...) or ...)

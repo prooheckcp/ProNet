@@ -7,7 +7,10 @@ local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
 local protectedSignal : ProNet.Signal = ProNet.getSignal("ProtectedSignal")
 local functionalSignal : ProNet.Signal = ProNet.getSignal("FunctionSignal")
 
-task.wait(2)
+testSignal:fire()
+protectedSignal:fire()
 
-testSignal:fire("Hellow there!", "Butiful!", "TEST")
-protectedSignal:fire("Hello, I'm protected!", "two")
+testSignal.Event:Connect(function(message)
+    print("Test signal from the client!")
+    print(message)
+end)
