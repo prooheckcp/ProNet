@@ -58,6 +58,7 @@ function ProNet:init() : nil
     end
 
     Signal.loadedUsers = loadedUsers --pass by reference
+    Signal.privateKeys = privateKeys --pass by reference
 end
 
 function ProNet.newSignal(name : string, options : table) : Signal.Signal
@@ -72,6 +73,9 @@ function ProNet.newSignal(name : string, options : table) : Signal.Signal
     if options then
         if options.signalType then
             newSignal.signalType = options.signalType
+        end
+        if options.protected then
+            newSignal.protected = true
         end
     end
 

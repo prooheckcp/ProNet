@@ -5,6 +5,7 @@
 --Services
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
 
 --Root folders
 local mainFolder = script.Parent.Parent
@@ -12,6 +13,7 @@ local enums = mainFolder.enums
 
 --Dependencies
 local SignalType = require(enums.SignalType)
+local HashLib = require(mainFolder.HashLib)
 
 export type Callback = {(callback : any) -> any}
 
@@ -39,6 +41,7 @@ local YIELDING_LIMIT : number = 10 -- seconds
 --Variables
 local Signal : Signal = {}
 Signal.loadedUsers = nil
+Signal.privateKeys = nil
 Signal.remote = nil
 Signal.protected = false
 Signal.signalType = SignalType.Event
@@ -79,6 +82,20 @@ function Signal.new()
 end
 
 --[=[
+    Callback wrapper for possible middleware steps
+    such as decryption
+]=]
+function Signal:_callback(callback : (any)->any, ...)
+    if self.protected then
+        local unhashedData : string = HashLib.base64_decode(({...})[1])
+        local decodedData : any = HttpService:JSONDecode(unhashedData)
+        return callback(table.unpack(decodedData))
+    else
+        return callback(...)
+    end
+end
+
+--[=[
     Load the data of the signal
 ]=]
 function Signal:_load() : nil
@@ -97,13 +114,13 @@ function Signal:_load() : nil
         if self.signalType == SignalType.Event then
             self.remote.OnServerEvent:Connect(function(...)
                 for _, callback : Callback in pairs(self.Event.attachedCallbacks) do
-                    callback(...)
+                    self:_callback(callback, ...)
                 end
             end)
         elseif self.signalType == SignalType.Function then
             self.remote.OnServerInvoke = function(...)
                 if self.Event.attachedCallbacks then
-                    return self.Event.attachedCallbacks(...)
+                    return self:_callback(self.Event.attachedCallbacks, ...)
                 end
             end
         end
@@ -111,13 +128,13 @@ function Signal:_load() : nil
         if self.signalType == SignalType.Event then
             self.remote.OnClientEvent:Connect(function(...)
                 for _, callback : Callback in pairs(self.Event.attachedCallbacks) do
-                    callback(...)
+                    self:_callback(callback, ...)
                 end
             end)
         elseif self.signalType == SignalType.Function then
             self.remote.OnClientInvoke:Connect(function(...)
                 if self.Event.attachedCallbacks then
-                    return self.Event.attachedCallbacks(...)
+                    return self:_callback(self.Event.attachedCallbacks, ...)
                 end
             end)
         end
@@ -142,18 +159,26 @@ function Signal:fire(player : Player, ...) : any
         end        
     end
 
+    local hashedData : string = nil
+    if self.protected then
+        local jsonEncoded : string = HttpService:JSONEncode({...})
+        hashedData = HashLib.base64_encode(jsonEncoded)
+    end
+
     if self.signalType == SignalType.Event then
-        self.remote:FireClient(player, ...)
+        self.remote:FireClient(player, hashedData or ...)
     elseif self.signalType == SignalType.Function then
-        return self.remote:InvokeClient(player, ...)
-    end 
+        return self.remote:InvokeClient(player, hashedData or ...)
+    end
 end
 
 function Signal:fireAll(...)
     if self.signalType == SignalType.Function then
         return error(FIRE_ALL_FUNCTION)
     elseif self.signalType == SignalType.Event then
-        self.remote:FireAllClients(...)
+        for _, player : Player in pairs(Players:GetPlayers()) do
+            self:fire(player, ...)
+        end
     end
 end
 

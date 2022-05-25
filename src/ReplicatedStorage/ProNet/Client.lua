@@ -47,6 +47,7 @@ local function newSignalWrapper(signalData : table)
     local newSignal : Signal.Signal = Signal.new()
     newSignal.signalType = signalData.signalType
     newSignal.remote = signalData.remote
+    newSignal.protected = signalData.protected
     newSignal:_load()
     return newSignal
 end
