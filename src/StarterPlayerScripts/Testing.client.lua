@@ -17,3 +17,9 @@ end)
 protectedSignal.Event:Connect(function(...)
     print("Protected signal from the client!", ...)
 end)
+
+--Cannot make it double way
+functionalSignal.Event:Connect(function(...)
+    print("Functional signal from the client!", ...)
+    return "Hello", "World!", 3
+end)
