@@ -10,16 +10,9 @@ local functionalSignal : ProNet.Signal = ProNet.getSignal("FunctionSignal")
 testSignal:fire()
 protectedSignal:fire()
 
-testSignal.Event:Connect(function(...)
-    print("Test signal from the client!", ...)
+local connection : ProNet.Connection = testSignal.Event:Connect(function(...)
+    print(...)
 end)
 
-protectedSignal.Event:Connect(function(...)
-    print("Protected signal from the client!", ...)
-end)
-
---Cannot make it double way
-functionalSignal.Event:Connect(function(...)
-    print("Functional signal from the client!", ...)
-    return "Hello", "World!", 3
-end)
+task.wait(2)
+connection:Disconnect()

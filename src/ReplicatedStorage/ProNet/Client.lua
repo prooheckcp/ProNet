@@ -97,5 +97,6 @@ end
 
 --Export types
 export type Signal = Signal.Signal
+export type Connection = Signal.Connection
 
 return ProNet

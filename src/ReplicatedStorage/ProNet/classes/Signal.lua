@@ -15,8 +15,10 @@ local enums = mainFolder.enums
 local SignalType = require(enums.SignalType)
 local HashLib = require(mainFolder.HashLib)
 
+export type Connection = {
+    Disconnect : (self : Connection) -> nil
+}
 export type Callback = {(callback : any) -> any}
-
 export type Event = {
     Connect : (self : Event, Callback) -> nil
 }
@@ -91,6 +93,19 @@ function Signal.new() : Signal
         elseif self.signalType == SignalType.Event then
             table.insert(self.Event.attachedCallbacks, callback)
         end
+
+        return {Disconnect = function(_)
+            if self.signalType == SignalType.Event then
+                for index : number, _callback in pairs(self.Event.attachedCallbacks) do
+                    if _callback == callback then
+                        table.remove(self.Event.attachedCallbacks, index)
+                        break
+                    end
+                end
+            elseif self.signalType == SignalType.Function then
+                self.Event.attachedCallbacks = nil
+            end
+        end}
     end
 
     return self
