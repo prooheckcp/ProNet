@@ -57,7 +57,7 @@ local function decryptData(hashedData : string) : nil | string
     if typeof(hashedData) ~= "string" then
         return nil
     end
-    
+
     local unhashedData = HashLib.base64_decode(hashedData)
     return table.unpack(HttpService:JSONDecode(unhashedData))
 end
@@ -97,7 +97,11 @@ end
 
 function Signal:_callbackClient(callback : (any, any)->nil, ...)
     if self.protected then
-        return callback(decryptData(({...})[1]))
+        if #{...} <= 0 then
+            return callback()
+        else
+            return callback(decryptData(({...})[1]))
+        end
     else
         return callback(...)
     end
