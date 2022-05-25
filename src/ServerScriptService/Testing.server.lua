@@ -9,8 +9,8 @@ local ProNet = require(ReplicatedStorage.ProNet)
 local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", {
     signalType = ProNet.SignalType.Event,
     protected = false,
-    requestLimit = 5, --Limit per second
-    requestResetTime = 3, --Change the limit from per 1 second to 3
+    requestLimit = 5,
+    requestResetTime = 3
 })
 
 local protectedSignal : ProNet.Signal = ProNet.newSignal("ProtectedSignal", {

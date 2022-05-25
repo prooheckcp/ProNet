@@ -17,6 +17,13 @@ local ALREADY_EXISTS : string = "A signal by the name of: {name} already exists,
 local ENTRY_POINT_NAME : string = "EntryPointRemoteData"
 local LOADING_POINT_NAME : string = "LoadingPointRemote"
 
+export type Options = {
+    signalType : SignalType.SignalType,
+    protected : boolean,
+    requestLimit : number,
+    requestResetTime : number
+}
+
 --Variables
 local privateKeys : Dictionary<Player | string> = {}
 local loadedUsers : Dictionary<Player | boolean> = {}
@@ -61,7 +68,7 @@ function ProNet:init() : nil
     Signal.privateKeys = privateKeys --pass by reference
 end
 
-function ProNet.newSignal(name : string, options : table) : Signal.Signal
+function ProNet.newSignal(name : string, options : Options) : Signal.Signal
     if storedSignals[name] then
         warn(string.gsub(ALREADY_EXISTS, "{name}", name))
         return storedSignals[name]
