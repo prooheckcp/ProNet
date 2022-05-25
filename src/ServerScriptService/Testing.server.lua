@@ -26,7 +26,7 @@ testSignal.Event:Connect(function(player : Player, ...)
 end)
 
 protectedSignal.Event:Connect(function(player : Player, ...)
-    print("Protected signal server!", ...)        
+    print("Protected signal server!", ...)
 end)
 
 Players.PlayerAdded:Connect(function(player : Player)

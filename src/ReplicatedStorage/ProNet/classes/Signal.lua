@@ -58,8 +58,14 @@ local function decryptData(hashedData : string) : nil | string
         return nil
     end
 
-    local unhashedData = HashLib.base64_decode(hashedData)
-    return table.unpack(HttpService:JSONDecode(unhashedData))
+    local unhashedData : string = HashLib.base64_decode(hashedData)
+    local decodedData : any = HttpService:JSONDecode(unhashedData)
+    
+    if typeof(decodedData) == "table" then
+        return table.unpack(decodedData)
+    else
+        return decodedData
+    end
 end
 
 --[=[
