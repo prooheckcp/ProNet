@@ -18,18 +18,13 @@ local HashLib = require(mainFolder.HashLib)
 export type Callback = {(callback : any) -> any}
 
 export type Event = {
-    Connect : Callback,
-    Super : any,
-    attachedCallbacks : Array<Callback> | Callback
+    Connect : (self : Event, Callback) -> nil
 }
 
 export type Signal = {
-    remote : RemoteEvent | RemoteFunction,
-    signalType : SignalType.SignalType,
-    _load : ()->nil,
-    protected : boolean,
     Event : Event,
-    eventListener : RBXScriptSignal
+    fire : (self : Signal, any) -> any,
+    fireAll : (self : Signal, any) -> nil
 }
 
 --Constants
