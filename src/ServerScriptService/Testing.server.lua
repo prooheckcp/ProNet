@@ -16,8 +16,14 @@ local protectedSignal : ProNet.Signal = ProNet.newSignal("ProtectedSignal", {
     protected = true
 })
 
+local functionalSignal : ProNet.Signal = ProNet.newSignal("FunctionSignal", {
+    signalType = ProNet.SignalType.Function,
+    protected = false
+})
+
 local function playerJoined(player : Player)
-    protectedSignal:fire(player, "UwU", "OwO", {value = 3})
+    local response = functionalSignal:fire(player, "Hi")
+    print(response)
 end
 
 Players.PlayerAdded:Connect(playerJoined)

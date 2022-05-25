@@ -132,11 +132,11 @@ function Signal:_load() : nil
                 end
             end)
         elseif self.signalType == SignalType.Function then
-            self.remote.OnClientInvoke:Connect(function(...)
+            self.remote.OnClientInvoke = function(...)
                 if self.Event.attachedCallbacks then
                     return self:_callback(self.Event.attachedCallbacks, ...)
                 end
-            end)
+            end
         end
     end
     self.load = nil
