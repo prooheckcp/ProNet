@@ -99,7 +99,7 @@ The :fire function fires all the event listeners on the other side of the connec
 | Name     |Type      | Description                                     |
 |----------|----------|-------------------------------------------------|
 |player    |``player?``| If :fire is called from the server the first argument should be the target client. If called from the client this argument is omitted.
-|arguments |``Tuple`` | The arguments passed to the [ProNet.Event](#pronetevent-) method |
+|arguments |``Tuple`` | The arguments passed to the [ProNet.Event](#pronetevent) method |
 
 **Returns**
 | Name     |Type      |Description                                                                                         |
@@ -150,7 +150,7 @@ The :fireAll function can be see as an extension of the :fire function. The main
 **Parameters**
 | Name     |Type      | Description                                     |
 |----------|----------|-------------------------------------------------|
-|arguments |``Tuple`` | The arguments passed to the [ProNet.Event](#pronetevent-) method |
+|arguments |``Tuple`` | The arguments passed to the [ProNet.Event](#pronetevent) method |
 
 **Returns**
 | Name | Type | Description |
@@ -207,7 +207,7 @@ This is an event that can be attached to a signal on both the client and the ser
 **Returns**
 | Name      | Type                 | Description |
 |-----------|----------------------|---------|
-|connection |``ProNet.Connection`` | A connection that represents the event created. Allows you to disconnect the event at any point in the future|
+|connection |[``ProNet.Connection``](#pronetconnection) | A connection that represents the event created. Allows you to disconnect the event at any point in the future|
 
 **Example:**
 
@@ -314,6 +314,7 @@ To download the library you can either fork it into your Rojo project or downloa
 Found any problem or simply wanna give some feedback regarding the library? Just hit me up!
 
 Discord: Prooheckcp#1906
+
 Twitter: https://twitter.com/Prooheckcp
 
 
