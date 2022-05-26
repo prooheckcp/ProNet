@@ -15,7 +15,12 @@ The only file you need to require at any point is the main ProNet file which can
 local ProNet = require(ReplicatedStorage.ProNet) --Change to whatever directory you have your ProNet in (recommended: ReplicatedStorage)
 ```
 
-## API (Server) 🧊
+## Legend
+🧊 -> Class
+🟪 -> Function
+⚡ -> Event
+
+## ProNet (Server) 🧊
 
 ### ProNet.newSignal 🟪
 Creates a new signal (or gets an existing signal with the given name).
@@ -47,7 +52,7 @@ local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", {
 })
 ```
 
-## API (Client) 🧊
+## ProNet (Client) 🧊
 
 ### ProNet.getSignal 🟪
 Gets a signal that was created on the server. Works to catch signals created at run-time as well.
