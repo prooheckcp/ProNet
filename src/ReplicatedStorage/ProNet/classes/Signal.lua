@@ -20,7 +20,7 @@ export type Connection = {
 }
 export type Callback = {(callback : any) -> any}
 export type Event = {
-    Connect : (self : Event, Callback) -> nil
+    Connect : (self : Event, Callback) -> Connection
 }
 
 export type Signal = {

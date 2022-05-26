@@ -16,8 +16,15 @@ local ProNet = require(ReplicatedStorage.ProNet) --Change to whatever directory 
 ```
 
 ## Legend
+
+🟩 -> Server
+
+🟦 -> Client
+
 🧊 -> Class
+
 🟪 -> Function
+
 ⚡ -> Event
 
 ## ProNet (Server) 🧊
@@ -80,14 +87,17 @@ local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
 
 ## ProNet.Signal 🧊
 
-### ProNet:fire 🟪
+### ProNet.Signal:fire 🟪
 
-The :Fire function fires all the event listeners on the other side of the connection. If called from the client it will fire all the events attached in the server. If called from the server it will fire all the events attached on the client side. Can take an infinite amount of arguments.
+The :fire function fires all the event listeners on the other side of the connection. If called from the client it will fire all the events attached in the server. If called from the server it will fire all the events attached on the client side. Can take an infinite amount of arguments.
+
+:fire calls wait for clients to load before sending the request meaning you can call the :fire as soon as the player joins the game.
 
 **Parameters**
 | Name     |Type      | Description                                     |
 |----------|----------|-------------------------------------------------|
-|arguments |``Tuple`` | The arguments passed to the [ProNet.Event](### proNet.event-⚡) method |
+|player    |``player?``| If :fire is called from the server the first argument should be the target client. If called from the client this argument is omitted.
+|arguments |``Tuple`` | The arguments passed to the [ProNet.Event](#pronetevent-) method |
 
 **Returns**
 | Name     |Type      |Description                                                                                         |
@@ -95,8 +105,16 @@ The :Fire function fires all the event listeners on the other side of the connec
 |arguments |``Tuple`` | Will return void if the signal is of type Event, can return arguments in case the type is Function |
 
 **Example:**
-Server:
+
+🟩Server:
 ```lua
+--Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+--Dependencies
+local ProNet = require(ReplicatedStorage.ProNet)
+
 local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", {
     signalType = ProNet.SignalType.Event,
     protected = false,
@@ -104,11 +122,18 @@ local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", {
     requestResetTime = 3
 })
 
-testSignal:fire("Hello from the server!")
+Players.PlayerAdded:Connect(function(player : Player)
+    testSignal:fire(player, "Hello from the server!")
+end)
 ```
 
-Client:
+🟦Client:
 ```lua
+--Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+--Dependencies
+local ProNet = require(ReplicatedStorage.ProNet)
 local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
 
 testSignal.Event:Connect(function(serverMessage : string)
@@ -116,9 +141,113 @@ testSignal.Event:Connect(function(serverMessage : string)
 end)
 ```
 
-### ProNet:fireAll 🟪
+### ProNet.Signal:fireAll 🟪
 
-### ProNet.Event ⚡
+The :fireAll function can be see as an extension of the :fire function. The main difference is that it fires all the clients instead of a single client when called from the server. This function cannot be called from the 🟦client!
+
+**Parameters**
+| Name     |Type      | Description                                     |
+|----------|----------|-------------------------------------------------|
+|arguments |``Tuple`` | The arguments passed to the [ProNet.Event](#pronetevent-) method |
+
+**Returns**
+| Name | Type | Description |
+|------|--------|---------|
+|      |``void``| |
+
+**Example:**
+
+🟩Server:
+```lua
+--Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+--Dependencies
+local ProNet = require(ReplicatedStorage.ProNet)
+
+local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", {
+    signalType = ProNet.SignalType.Event,
+    protected = false,
+    requestLimit = 5,
+    requestResetTime = 3
+})
+
+task.wait(5)
+
+testSignal:fireAll("Hello clients!")
+```
+
+🟦Client:
+```lua
+--Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+--Dependencies
+local ProNet = require(ReplicatedStorage.ProNet)
+local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
+
+testSignal.Event:Connect(function(serverMessage : string)
+    print(serverMessage) --Output: Hello clients!
+end)
+```
+
+### ProNet.Signal.Event ⚡
+
+This is an event that can be attached to a signal on both the client and the server. It gets called whenever someone :fire's the signal associated to this signal.
+
+**Parameters**
+| Name     |Type      | Description                                     |
+|----------|----------|-------------------------------------------------|
+|player |``Player?`` | If the event is attached in the client this argument won't exist. If attached in the server the first argument will represent the ``Player`` that fire the signal |
+|arguments|```Tuple``| The arguments passed thru the network|
+
+**Returns**
+| Name      | Type                 | Description |
+|-----------|----------------------|---------|
+|connection |``ProNet.Connection`` | A connection that represents the event created. Allows you to disconnect the event at any point in the future|
+
+**Example:**
+
+🟩Server:
+```lua
+--Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+--Dependencies
+local ProNet = require(ReplicatedStorage.ProNet)
+
+local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", {
+    signalType = ProNet.SignalType.Event,
+    protected = false,
+    requestLimit = 5,
+    requestResetTime = 3
+})
+
+task.wait(5)
+
+testSignal:fireAll("Hello clients!")
+```
+
+🟦Client:
+```lua
+--Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+--Dependencies
+local ProNet = require(ReplicatedStorage.ProNet)
+local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
+
+local connection : ProNet.Connection = testSignal.Event:Connect(function(message : string)
+    print(message) -- Won't output anything cause the event will be disconnected before the server fires it
+end)
+
+task.wait(2)
+
+connection:Disconnect()
+
+```
 
 ## Contact 📞
 
