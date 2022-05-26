@@ -8,9 +8,11 @@ local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
 local protectedSignal : ProNet.Signal = ProNet.getSignal("ProtectedSignal")
 local functionalSignal : ProNet.Signal = ProNet.getSignal("FunctionSignal")
 
-testSignal.Event:Connect(function(serverMessage : string)
+local connection : ProNet.Connection = testSignal.Event:Connect(function(serverMessage : string)
     print(serverMessage) --Output: Hello from the server!
 end)
+
+connection:Disconnect()
 
 for i = 0, 10 do
     testSignal:fire()

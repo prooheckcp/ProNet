@@ -5,7 +5,13 @@ local Players = game:GetService("Players")
 --Dependencies
 local ProNet = require(ReplicatedStorage.ProNet)
 
-
+ProNet.SignalType
+local options : ProNet.Options = {
+    signalType = ProNet.SignalType.Event,
+    protected = false,
+    requestLimit = 5,
+    requestResetTime = 3
+}
 
 --Variables
 local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", {

@@ -27,6 +27,8 @@ local ProNet = require(ReplicatedStorage.ProNet) --Change to whatever directory 
 
 ⚡ -> Event
 
+🔗 -> Enum
+
 ## ProNet (Server) 🧊
 
 ### ProNet.newSignal 🟪
@@ -200,7 +202,7 @@ This is an event that can be attached to a signal on both the client and the ser
 | Name     |Type      | Description                                     |
 |----------|----------|-------------------------------------------------|
 |player |``Player?`` | If the event is attached in the client this argument won't exist. If attached in the server the first argument will represent the ``Player`` that fire the signal |
-|arguments|```Tuple``| The arguments passed thru the network|
+|arguments|``Tuple``| The arguments passed thru the network|
 
 **Returns**
 | Name      | Type                 | Description |
@@ -248,6 +250,64 @@ task.wait(2)
 connection:Disconnect()
 
 ```
+
+## ProNet.Options 🧊
+
+ProNet.Options is a container class used to represent a table that holds additional information given to a new signal.
+
+**Example:**
+🟩Server:
+```lua
+--Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+--Dependencies
+local ProNet = require(ReplicatedStorage.ProNet)
+
+local options : ProNet.Options = {
+    signalType = ProNet.SignalType.Event,
+    protected = false,
+    requestLimit = 5,
+    requestResetTime = 3
+}
+
+local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", options)
+```
+
+**Options List:**
+| Name      | Type| Description | Default |
+|-----------|-----|-----------------|---------|
+|signalType| ``ProNet.SignalType``| The type of server-client connection you want to create|ProNet.SignalType.Event |
+|protected| ``boolean``| If the data being moved between server-client should be hashed or not| false|
+|requestLimit | ``number``| The amount of requests that are allowed via this connection per second | -1 |
+|requestResetTime|``number``| Only works if the requestLimit > 0. Changes the time gap between of the request limits in seconds | 1 |
+
+## ProNet.Connection 🧊
+
+### ProNet.Signal:Disconnect 🟪
+
+Stops listening to the given event
+
+**Example:**
+```lua
+local connection : ProNet.Connection = testSignal.Event:Connect(function(serverMessage : string)
+    print(serverMessage)
+end)
+
+connection:Disconnect()
+```
+
+## ProNet.SignalType 🔗
+| Name    | Description                              |
+|---------|------------------------------------------|
+|Event    | Creates a remoteEvent type connection    |
+|Function | Creates a remoteFunction type connection |
+
+
+## Installation
+
+To download the library you can either fork it into your Rojo project or download it from here.
+[ProNet](https://www.roblox.com/library/9733352728/ProNet)
 
 ## Contact 📞
 
