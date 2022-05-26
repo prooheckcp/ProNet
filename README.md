@@ -1,7 +1,5 @@
 # ProNet
 
-[test](#installation)
-
 ## A Network manager
 ProNet is a signal manager that facilitates the connections between the Client and Server in Roblox. It allows you to create connections between the client and the server without having to manually create and manage remote events/remote functions, instead you can connect the client and the server by using case-sensitive named signals.
 
@@ -41,12 +39,12 @@ Creates a new signal (or gets an existing signal with the given name).
 | Name      |Type               | Description                    |
 |-----------|-------------------|--------------------------------|
 |signalName |``string``         | The name of the signal         |
-|options    |``ProNet.Options`` | The Options for the new signal |
+|options    |[``ProNet.Options``](#proNet.options-🧊) | The Options for the new signal |
 
 **Returns**
 | Name     |Type              | Description                 |
 |----------|------------------|-----------------------------|
-|newSignal |``ProNet.Signal`` | Returns a signal connection |
+|newSignal |[``ProNet.Signal``](#proNet.signal-🧊) | Returns a signal connection |
 
 **Example:**
 ```lua
@@ -77,7 +75,7 @@ Gets a signal that was created on the server. Works to catch signals created at 
 **Returns**
 | Name          |Type              |Description                  |
 |---------------|------------------|-----------------------------|
-|existingSignal |``ProNet.Signal`` | Returns a signal connection |
+|existingSignal |[``ProNet.Signal``](#proNet.signal-🧊) | Returns a signal connection |
 
 **Example:**
 ```lua
@@ -280,14 +278,14 @@ local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", options)
 **Options List:**
 | Name      | Type| Description | Default |
 |-----------|-----|-----------------|---------|
-|signalType| ``ProNet.SignalType``| The type of server-client connection you want to create|ProNet.SignalType.Event |
+|signalType| [``ProNet.SignalType``](#proNet.signalType-🔗)| The type of server-client connection you want to create|ProNet.SignalType.Event |
 |protected| ``boolean``| If the data being moved between server-client should be hashed or not| false|
 |requestLimit | ``number``| The amount of requests that are allowed via this connection per second | -1 |
 |requestResetTime|``number``| Only works if the requestLimit > 0. Changes the time gap between of the request limits in seconds | 1 |
 
 ## ProNet.Connection 🧊
 
-### ProNet.Signal:Disconnect 🟪
+### ProNet.Connection:Disconnect 🟪
 
 Stops listening to the given event
 
