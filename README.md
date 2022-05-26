@@ -16,23 +16,61 @@ local ProNet = require(ReplicatedStorage.ProNet) --Change to whatever directory 
 ```
 
 ## API (Server) 🧊
-The settings file is just a file that allows you to change some of the behaviors from ProStore.
 
-|Setting                   |Description                                                                                          |
-|--------------------------|-----------------------------------------------------------------------------------------------------|
-|SaveInStudio              |Whether you want the data changed in a studio session to save or not                                 |
-|LoadInStudio              |Whether you want the data from the DataStore to be loaded while in a studio session                  |
-|OutputWarnings.inStudio   |Whether you want the warnings (usually errors) to output on the console during a studio session      |
-|OutputWarnings.inReleased |Whether you want the warnings (usually errors) to output on the console during a normal game session |
-|AutoSave.Enabled          |Whether you want the users data to be saved every X amount of minute during his session.             |
-|AutoSave.TimeGap          |How often do you want the users data to be saved (In minutes).                                       |
-|AutoSave.Notifications    |If you want a notification to be be printed into the console whenever a users data gets saved.       |
-|DatabasePrivateKey        |The key that will be used to create your dataStore and access it.                                    |
+### ProNet.newSignal 🟪
+Creates a new signal (or gets an existing signal with the given name).
+
+**Parameters**
+| Name      |Type               | Description                    |
+|-----------|-------------------|--------------------------------|
+|signalName |``string``         | The name of the signal         |
+|options    |``ProNet.Options`` | The Options for the new signal |
+
+**Returns**
+| Name     |Type              | Description                 |
+|----------|------------------|-----------------------------|
+|newSignal |``ProNet.Signal`` | Returns a signal connection |
+
+**Example:**
+```lua
+--Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+--Dependencies
+local ProNet = require(ReplicatedStorage.ProNet)
+
+local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", {
+    signalType = ProNet.SignalType.Event,
+    protected = false,
+    requestLimit = 5,
+    requestResetTime = 3
+})
+```
 
 ## API (Client) 🧊
-For all of the examples on the API we will be assuming that the schema of our DataBase looks something like this.
-```lua
 
+### ProNet.getSignal 🟪
+Gets a signal that was created on the server. Works to catch signals created at run-time as well.
+
+**Parameters**
+| Name      |Type       | Description            |
+|-----------|-----------|------------------------|
+|signalName |``string`` | The name of the signal |
+
+**Returns**
+| Name          |Type              |Description                  |
+|---------------|------------------|-----------------------------|
+|existingSignal |``ProNet.Signal`` | Returns a signal connection |
+
+**Example:**
+```lua
+--Services
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+--Dependencies
+local ProNet = require(ReplicatedStorage.ProNet)
+
+local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
 ```
 
 ## Contact 📞
