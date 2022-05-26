@@ -25,6 +25,7 @@ local functionalSignal : ProNet.Signal = ProNet.newSignal("FunctionSignal", {
     protected = false
 })
 
+testSignal:fire()
 
 testSignal.Event:Connect(function()
     print("Called!")

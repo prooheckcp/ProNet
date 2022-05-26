@@ -78,6 +78,48 @@ local ProNet = require(ReplicatedStorage.ProNet)
 local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
 ```
 
+## ProNet.Signal 🧊
+
+### ProNet:fire 🟪
+
+The :Fire function fires all the event listeners on the other side of the connection. If called from the client it will fire all the events attached in the server. If called from the server it will fire all the events attached on the client side. Can take an infinite amount of arguments.
+
+**Parameters**
+| Name     |Type      | Description                                     |
+|----------|----------|-------------------------------------------------|
+|arguments |``Tuple`` | The arguments passed to the [ProNet.Event](### proNet.event-⚡) method |
+
+**Returns**
+| Name     |Type      |Description                                                                                         |
+|----------|----------|----------------------------------------------------------------------------------------------------|
+|arguments |``Tuple`` | Will return void if the signal is of type Event, can return arguments in case the type is Function |
+
+**Example:**
+Server:
+```lua
+local testSignal : ProNet.Signal = ProNet.newSignal("TestSignal", {
+    signalType = ProNet.SignalType.Event,
+    protected = false,
+    requestLimit = 5,
+    requestResetTime = 3
+})
+
+testSignal:fire("Hello from the server!")
+```
+
+Client:
+```lua
+local testSignal : ProNet.Signal = ProNet.getSignal("TestSignal")
+
+testSignal.Event:Connect(function(serverMessage : string)
+    print(serverMessage) --Output: Hello from the server!
+end)
+```
+
+### ProNet:fireAll 🟪
+
+### ProNet.Event ⚡
+
 ## Contact 📞
 
 Found any problem or simply wanna give some feedback regarding the library? Just hit me up!
