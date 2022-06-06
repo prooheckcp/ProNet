@@ -5,7 +5,6 @@ local Players = game:GetService("Players")
 --Dependencies
 local ProNet = require(ReplicatedStorage.ProNet)
 
-ProNet.SignalType
 local options : ProNet.Options = {
     signalType = ProNet.SignalType.Event,
     protected = false,
@@ -32,7 +31,7 @@ local functionalSignal : ProNet.Signal = ProNet.newSignal("FunctionSignal", {
 })
 
 local connection : ProNet.Connection = testSignal.Event:Connect(function()
-    
+    protectedSignal:fire("hi!")
 end)
 
 task.wait(2)

@@ -18,18 +18,19 @@ local HashLib = require(mainFolder.HashLib)
 export type Connection = {
     Disconnect : (self : Connection) -> nil
 }
-export type Callback = {(callback : any) -> any}
+export type Callback = {(...any) -> any}
 export type Event = {
     Connect : (self : Event, Callback) -> Connection
 }
 
 export type Signal = {
     Event : Event,
-    fire : (self : Signal, any) -> any,
-    fireAll : (self : Signal, any) -> nil
+    fire : (self : Signal, ...any) -> any,
+    fireAll : (self : Signal, ...any) -> nil
 }
 
 --Constants
+local PLAYER_MISSING : string = "The :fire() call requires a player as the first argument when called from the server!"
 local FIRE_ALL_FUNCTION : string = "Fire All cannot be called on RemoteFunctions, only on RemoteEvents!"
 local REMOTE_NOT_FOUND : string = "Internal Error! Could not find remote instance!"
 local WARNING_OVERRIDING_CALLBACK : string = "Warning! You're overriding the callback of a remote function!"
@@ -226,6 +227,9 @@ end
     Fires the client. Used as an alternative endpoint for the :Fire method
 ]=]
 function Signal:_fireClient(player : Player, ...)
+    if not player then
+        error(PLAYER_MISSING)
+    end
     if not self.loadedUsers[player] then
         if player.Parent == Players then
             local yieldingCounter = 0

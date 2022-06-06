@@ -15,6 +15,6 @@ end)
 connection:Disconnect()
 
 for i = 0, 10 do
-    testSignal:fire()
+    --testSignal:fire()
     task.wait(0.2)
 end
