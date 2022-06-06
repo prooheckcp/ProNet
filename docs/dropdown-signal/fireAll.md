@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# ProNet.Signal:fireAll 🟪
+# Signal:fireAll 🟪
 
 The :fireAll function can be see as an extension of the :fire function. The main difference is that it fires all the clients instead of a single client when called from the server. This function cannot be called from the 🟦client!
 

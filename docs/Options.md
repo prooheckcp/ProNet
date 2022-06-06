@@ -1,8 +1,8 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 ---
 
-# 🧊Options
+# 🧊ProNet.Options
 
 ProNet.Options is a container class used to represent a table that holds additional information given to a new signal.
 

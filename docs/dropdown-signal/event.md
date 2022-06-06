@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# ProNet.Signal.Event ⚡
+# Signal.Event ⚡
 
 This is an event that can be attached to a signal on both the client and the server. It gets called whenever someone :fire's the signal associated to this signal.
 
