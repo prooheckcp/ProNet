@@ -5,7 +5,7 @@
 const darkCodeTheme = require('prism-react-renderer/themes/vsDark');
 
 //Some constants
-const REPO_NAME = "ProStore3"
+const REPO_NAME = "ProNet"
 const PROFILE_NAME = "prooheckcp"
 
 /** @type {import('@docusaurus/types').Config} */
@@ -15,7 +15,7 @@ const config = {
   ],
 
   title: REPO_NAME,
-  tagline: 'A small Roblox DataStore manager',
+  tagline: 'A Client-Server communication manager',
   url: 'https://prooheckcp.github.io', //Change to website link
   baseUrl: `/${REPO_NAME}/`,
   onBrokenLinks: 'throw',
