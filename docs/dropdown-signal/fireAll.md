@@ -10,7 +10,7 @@ The :fireAll function can be see as an extension of the :fire function. The main
 
 | Name     |Type      | Description                                     |
 |----------|----------|-------------------------------------------------|
-|arguments |``Tuple`` | The arguments passed to the [ProNet.Event](#pronetevent) method |
+|arguments |``Tuple`` | The arguments passed to the [Signal.Event](../dropdown-signal/event) method |
 
 **Returns:**
 

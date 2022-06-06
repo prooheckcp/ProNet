@@ -13,7 +13,7 @@ The :fire function fires all the event listeners on the other side of the connec
 | Name     |Type      | Description                                     |
 |----------|----------|-------------------------------------------------|
 |player    |``player?``| If :fire is called from the server the first argument should be the target client. If called from the client this argument is omitted.
-|arguments |``Tuple`` | The arguments passed to the [ProNet.Event](#pronetevent) method |
+|arguments |``Tuple`` | The arguments passed to the [Signal.Event](../dropdown-signal/event) method |
 
 **Returns:**
 

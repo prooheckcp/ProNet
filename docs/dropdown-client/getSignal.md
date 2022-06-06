@@ -15,7 +15,7 @@ Gets a signal that was created on the server. Works to catch signals created at 
 
 | Name          |Type              |Description                  |
 |---------------|------------------|-----------------------------|
-|existingSignal |[``ProNet.Signal``](#proNet.signal-🧊) | Returns a signal connection |
+|existingSignal |[``ProNet.Signal``](../category/pronetsignal/) | Returns a signal connection |
 
 **Example:**
 ```luau

@@ -9,13 +9,13 @@ Creates a new signal (or gets an existing signal with the given name).
 | Name      |Type               | Description                    |
 |-----------|-------------------|--------------------------------|
 |signalName |``string``         | The name of the signal         |
-|options    |[``ProNet.Options``](#proNet.options-🧊) | The Options for the new signal |
+|options    |[``ProNet.Options``](../Options) | The Options for the new signal |
 
 **Returns:**
 
 | Name     |Type              | Description                 |
 |----------|------------------|-----------------------------|
-|newSignal |[``ProNet.Signal``](#proNet.signal-🧊) | Returns a signal connection |
+|newSignal |[``ProNet.Signal``](../category/pronetsignal/) | Returns a signal connection |
 
 **Example:**
 ```luau
