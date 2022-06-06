@@ -10,6 +10,7 @@ local isClient : boolean = RunService:IsClient()
 local isServer : boolean = RunService:IsServer()
 
 if isClient then
+    script.Server:Destroy()
     Client:init()
     return Client
 elseif isServer then
