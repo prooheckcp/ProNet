@@ -1,5 +1,9 @@
 # ProNet
 
+Check the official page of this API instead of reading the below!
+
+## [ProNetAPI](https://prooheckcp.github.io/ProNet/)
+
 ## A Network manager
 ProNet is a signal manager that facilitates the connections between the Client and Server in Roblox. It allows you to create connections between the client and the server without having to manually create and manage remote events/remote functions, instead you can connect the client and the server by using case-sensitive named signals.
 
