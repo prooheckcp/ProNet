@@ -13,7 +13,6 @@ local Signal = require(classes.Signal)
 local SignalType = require(enums.SignalType)
 
 --Constants
-local ALREADY_EXISTS : string = "A signal by the name of: {name} already exists, please avoid reusing signals across server files!"
 local ENTRY_POINT_NAME : string = "EntryPointRemoteData"
 local LOADING_POINT_NAME : string = "LoadingPointRemote"
 
@@ -70,7 +69,6 @@ end
 
 function ProNet.newSignal(name : string, options : Options) : Signal.Signal
     if storedSignals[name] then
-        warn(string.gsub(ALREADY_EXISTS, "{name}", name))
         return storedSignals[name]
     end
 
